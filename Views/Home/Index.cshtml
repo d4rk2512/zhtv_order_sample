@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var songData = ViewData["SongData"] as List<Song>;
+    var playing = ViewData["Playing"] as Song;
+    var nextSongs = ViewData["NextSongs"] as List<Song>;
+}
+@model zhtv.Models.OrderInfo
+
+<div>
+    <p><b>Danh sách bài hát:</b></p>
+    @foreach (var song in songData)
+    {
+        <p style="margin-bottom: 4px;">@song.SongId: @song.Name - @song.Singer</p>
+    }
+    <p><b>Bài Đang phát:</b> @if (playing.SongId != 0)
+        {
+            string.Format("$0: $1 - $2", playing.SongId, playing.Name, playing.Singer);
+        }
+    </p>
+    <p><b>Danh sách chờ:</b></p>
+    @foreach (var song in nextSongs)
+    {
+        <p>@song.SongId: @song.Name - @song.Singer: @song.UserOrders.Count vote (@string.Join(", ", song.UserOrders))</p>
+    }
+</div>
+<br />
+<hr />
+<br />
+<div>
+    @using (Html.BeginForm("AddOrder", "Home"))
+    {
+        <div><label>User</label>：@Html.TextBoxFor(model => model.User)</div>
+        @Html.ValidationMessageFor(model => model.User)
+        <div><label>SongId</label>：@Html.TextBoxFor(model => model.SongId)</div>
+        @Html.ValidationMessageFor(model => model.SongId)
+        <br />
+        <button type="submit">Order</button>
+    }
+    <input type="button" value="Play next song" onclick="location.href='@Url.Action("PlayNextSong", "Home")'" />
+</div>
