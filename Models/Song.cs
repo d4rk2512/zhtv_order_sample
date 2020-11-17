@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace zhtv.Models
@@ -8,6 +9,7 @@ namespace zhtv.Models
         public string Name { set; get; }
         public string Singer { set; get; }
         public List<string> UserOrders { set; get; } = new List<string>();
+        public DateTime lastUpdate { set; get; }
 
         // override object.Equals
         public override bool Equals(object obj)

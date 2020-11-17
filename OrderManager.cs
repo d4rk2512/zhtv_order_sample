@@ -76,6 +76,7 @@ namespace zhtv
             {
                 var song = SongDatas[rand.Next(1, allSongs)];
                 if (OrderSongs.Contains(song)) continue;
+                song.lastUpdate = DateTime.Now;
                 OrderSongs.Add(song);
             }
         }
@@ -99,8 +100,9 @@ namespace zhtv
             {
                 var addSong = SongDatas[order.SongId];
                 addSong.UserOrders.Add(order.User);
+                addSong.lastUpdate = DateTime.Now;
                 OrderSongs.Add(addSong);
-                OrderSongs.Sort((a, b) => b.UserOrders.Count - a.UserOrders.Count);
+                OrderSongs.Sort(OrderSongCompare);
                 return;
             }
 
@@ -110,7 +112,15 @@ namespace zhtv
             if (song.UserOrders.Contains(order.User)) return;
 
             song.UserOrders.Add(order.User);
-            OrderSongs.Sort((a, b) => b.UserOrders.Count - a.UserOrders.Count);
+            song.lastUpdate = DateTime.Now;
+            OrderSongs.Sort(OrderSongCompare);
+        }
+
+        public int OrderSongCompare(Song a, Song b)
+        {
+            var userNumberCompare = b.UserOrders.Count - a.UserOrders.Count;
+            if (userNumberCompare != 0) return userNumberCompare;
+            return (a.lastUpdate - b.lastUpdate).Milliseconds;
         }
 
         // Chuyển bài
